@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise Experience</title>
+    <style>
+        :root {
+            --primary: #6200ee;
+            --secondary: #03dac6;
+            --error: #b00020;
+            --background: #f5f5f5;
+            --surface: #ffffff;
+            --on-primary: #ffffff;
+            --on-secondary: #000000;
+            --on-background: #000000;
+            --on-surface: #000000;
+            --border-radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--on-background);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 800px;
+            min-height: 500px;
+            background-color: var(--surface);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            background-color: var(--primary);
+            color: var(--on-primary);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 300px;
+        }
+
+        .btn-container {
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: var(--on-primary);
+            border: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 15px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(98, 0, 238, 0.3);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .btn:hover {
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 7px 20px rgba(98, 0, 238, 0.4);
+        }
+
+        .btn:active {
+            transform: scale(0.95) translateY(0);
+            box-shadow: 0 2px 10px rgba(98, 0, 238, 0.2);
+        }
+
+        .ripple {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        .surprise-box {
+            width: 100%;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+            position: relative;
+        }
+
+        .surprise-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+        }
+
+        .surprise-content.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--surface);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.7);
+            transition: all 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--on-surface);
+            opacity: 0.7;
+        }
+
+        .close-btn:hover {
+            opacity: 1;
+        }
+
+        .game-container {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            background-color: #f0f0f0;
+            margin-bottom: 20px;
+        }
+
+        .character {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .obstacle {
+            width: 30px;
+            height: 30px;
+            background-color: var(--error);
+            position: absolute;
+            top: -30px;
+        }
+
+        .score {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-weight: bold;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .emoji-rain {
+            position: absolute;
+            font-size: 24px;
+            user-select: none;
+            will-change: transform;
+            z-index: 5;
+            animation: emojifall 3s linear forwards;
+        }
+
+        @keyframes emojifall {
+            0% {
+                transform: translateY(-20vh) rotate(0deg);
+                opacity: 1;
+            }
+
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .progress {
+            width: 100%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--secondary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .fortune-paper {
+            background-color: #fffdf0;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            font-family: 'Courier New', monospace;
+            position: relative;
+            max-width: 300px;
+            margin: 0 auto;
+            transform-style: preserve-3d;
+            transform: rotateY(0deg);
+            transition: transform 0.6s ease;
+        }
+
+        .fortune-paper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 49%, rgba(0, 0, 0, 0.05) 49%, rgba(0, 0, 0, 0.05) 51%, transparent 51%);
+            background-size: 10px 10px;
+            pointer-events: none;
+        }
+
+        .fortune-message {
+            text-align: center;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .fortune-lucky-numbers {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #777;
+            margin-top: 15px;
+        }
+
+        canvas#fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--on-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .dark-theme {
+            --primary: #bb86fc;
+            --secondary: #03dac6;
+            --background: #121212;
+            --surface: #1e1e1e;
+            --on-primary: #000000;
+            --on-secondary: #000000;
+            --on-background: #ffffff;
+            --on-surface: #ffffff;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fullscreen-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .fullscreen-effect.active {
+            opacity: 1;
+        }
+
+        .matrix-effect {
+            background-color: #000;
+            overflow: hidden;
+        }
+
+        .matrix-column {
+            position: absolute;
+            top: -100px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: #0f0;
+            white-space: nowrap;
+            text-shadow: 0 0 5px #0f0;
+            opacity: 0.8;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            transform-origin: center;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(30);
+                opacity: 0;
+            }
+        }
+
+        .speech-bubble {
+            position: relative;
+            background-color: var(--primary);
+            color: var(--on-primary);
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 80%;
+            margin: 20px auto;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: var(--primary) transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="fireworks"></canvas>
+
+    <div class="app-container">
+        <div class="header">
+            <button class="theme-toggle" id="themeToggle">🌙</button>
+            <h1>Interactive Surprise Experience</h1>
+            <p>Click the button below and prepare to be amazed!</p>
+        </div>
+
+        <div class="content">
+            <div class="btn-container">
+                <button class="btn" id="surpriseBtn">Surprise Me!</button>
+            </div>
+
+            <div class="surprise-box">
+                <div class="surprise-content" id="surpriseContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="gameModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeGameBtn">×</button>
+            <h2>Mini Game Challenge</h2>
+            <p>Move left and right with arrow keys. Avoid the falling obstacles!</p>
+            <div class="game-container" id="gameContainer">
+                <div class="character" id="character"></div>
+                <div class="score" id="score">Score: 0</div>
+            </div>
+            <button class="btn" id="startGameBtn">Start Game</button>
+        </div>
+    </div>
+
+    <div class="fullscreen-effect matrix-effect" id="matrixEffect"></div>
+
+    <script>
+        // DOM Elements
+        const surpriseBtn = document.getElementById('surpriseBtn');
+        const surpriseContent = document.getElementById('surpriseContent');
+        const themeToggle = document.getElementById('themeToggle');
+        const gameModal = document.getElementById('gameModal');
+        const closeGameBtn = document.getElementById('closeGameBtn');
+        const startGameBtn = document.getElementById('startGameBtn');
+        const gameContainer = document.getElementById('gameContainer');
+        const character = document.getElementById('character');
+        const scoreDisplay = document.getElementById('score');
+        const matrixEffect = document.getElementById('matrixEffect');
+        const fireworksCanvas = document.getElementById('fireworks');
+        const ctx = fireworksCanvas.getContext('2d');
+
+        // Set canvas dimensions
+        fireworksCanvas.width = window.innerWidth;
+        fireworksCanvas.height = window.innerHeight;
+
+        // Global variables
+        let currentTheme = 'light';
+        let gameActive = false;
+        let gameScore = 0;
+        let obstacles = [];
+        let characterPosition = 50;
+        let animationFrameId;
+        let matrixColumns = [];
+
+        // Surprise types
+        const surpriseTypes = [
+            'fortune',
+            'fact',
+            'mini-game',
+            'emoji-rain',
+            'matrix-code',
+            'personality-quiz',
+            'color-explosion',
+            'message-generator'
+        ];
+
+        // Initialize
+        function init() {
+            // Event listeners
+            surpriseBtn.addEventListener('click', handleSurpriseClick);
+            themeToggle.addEventListener('click', toggleTheme);
+            closeGameBtn.addEventListener('click', closeGameModal);
+            startGameBtn.addEventListener('click', startGame);
+            window.addEventListener('resize', handleResize);
+
+            // Button ripple effect
+            surpriseBtn.addEventListener('mousedown', createRipple);
+
+            // Setup matrix effect
+            setupMatrixEffect();
+        }
+
+        // Handle window resize
+        function handleResize() {
+            fireworksCanvas.width = window.innerWidth;
+            fireworksCanvas.height = window.innerHeight;
+        }
+
+        // Create ripple effect on button click
+        function createRipple(e) {
+            const button = e.currentTarget;
+            const ripple = document.createElement('span');
+            const rect = button.getBoundingClientRect();
+
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+
+            ripple.style.width = ripple.style.height = `${size}px`;
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            ripple.classList.add('ripple');
+
+            button.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+
+        // Handle surprise button click
+        function handleSurpriseClick() {
+            const randomSurprise = surpriseTypes[Math.floor(Math.random() * surpriseTypes.length)];
+
+            // Add animation effects
+            createParticleExplosion(surpriseBtn);
+
+            // Reset and prepare surprise content
+            surpriseContent.innerHTML = '';
+            surpriseContent.classList.remove('active');
+
+            setTimeout(() => {
+                // Generate surprise content
+                switch (randomSurprise) {
+                    case 'fortune':
+                        generateFortuneCookie();
+                        break;
+                    case 'fact':
+                        generateRandomFact();
+                        break;
+                    case 'mini-game':
+                        openGameModal();
+                        break;
+                    case 'emoji-rain':
+                        createEmojiRain();
+                        generateRandomMessage();
+                        break;
+                    case 'matrix-code':
+                        activateMatrixEffect();
+                        setTimeout(() => {
+                            deactivateMatrixEffect();
+                            generateRandomMessage();
+                        }, 3000);
+                        break;
+                    case 'personality-quiz':
+                        generatePersonalityQuiz();
+                        break;
+                    case 'color-explosion':
+                        triggerFireworks();
+                        generateRandomMessage();
+                        break;
+                    case 'message-generator':
+                        generateMotivationalMessage();
+                        break;
+                }
+
+                surpriseContent.classList.add('active');
+            }, 300);
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            if (currentTheme === 'light') {
+                document.body.classList.add('dark-theme');
+                themeToggle.textContent = '☀️';
+                currentTheme = 'dark';
+            } else {
+                document.body.classList.remove('dark-theme');
+                themeToggle.textContent = '🌙';
+                currentTheme = 'light';
+            }
+        }
+
+        // Create particle explosion
+        function createParticleExplosion(element) {
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            const colors = ['#6200ee', '#03dac6', '#ff0266', '#ffde03', '#ff7a00'];
+
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+
+                const size = Math.random() * 8 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 5 + 3;
+                const posX = centerX;
+                const posY = centerY;
+
+                particle.style.left = `${posX}px`;
+                particle.style.top = `${posY}px`;
+
+                document.body.appendChild(particle);
+
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity;
+
+                let startTime = performance.now();
+
+                function animateParticle(timestamp) {
+                    const elapsed = timestamp - startTime;
+                    const progress = elapsed / 1000; // seconds
+
+                    const currentX = posX + vx * 60 * progress;
+                    const currentY = posY + vy * 60 * progress + 100 * progress * progress; // Add gravity
+
+                    particle.style.left = `${currentX}px`;
+                    particle.style.top = `${currentY}px`;
+                    particle.style.opacity = 1 - progress;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(animateParticle);
+                    } else {
+                        particle.remove();
+                    }
+                }
+
+                requestAnimationFrame(animateParticle);
+            }
+        }
+
+        // Generate fortune cookie
+        function generateFortuneCookie() {
+            const fortunes = [
+                "An exciting opportunity awaits you very soon.",
+                "Your creativity will lead you to great success.",
+                "A thrilling new adventure is just around the corner.",
+                "Your coding skills will solve an important problem.",
+                "Someone special admires your talents from afar.",
+                "Your next project will exceed all expectations.",
+                "A surprising friendship will bring unexpected joy.",
+                "Your determination will overcome all obstacles.",
+                "Good news will arrive in an unexpected form.",
+                "Your unique perspective is about to be recognized and valued."
+            ];
+
+            const luckyNumbers = [];
+            for (let i = 0; i < 6; i++) {
+                luckyNumbers.push(Math.floor(Math.random() * 100));
+            }
+
+            const fortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+
+            surpriseContent.innerHTML = `
+                <h3>Your Fortune Cookie</h3>
+                <div class="fortune-paper floating">
+                    <div class="fortune-message">${fortune}</div>
+                    <div class="fortune-lucky-numbers">Lucky Numbers: ${luckyNumbers.join(', ')}</div>
+                </div>
+            `;
+        }
+
+        // Generate random fact
+        function generateRandomFact() {
+            const facts = [
+                "The world's oldest known living tree is over 5,000 years old.",
+                "Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are still preserved after thousands of years.",
+                "The shortest war in history was between Britain and Zanzibar on August 27, 1896. Zanzibar surrendered after 38 minutes.",
+                "The average person will spend six months of their life waiting for red lights to turn green.",
+                "The first computer programmer was a woman named Ada Lovelace who lived in the 1800s.",
+                "A day on Venus is longer than a year on Venus. It takes 243 Earth days to rotate once on its axis, but only 225 Earth days to orbit the Sun.",
+                "The human nose can detect about 1 trillion different scents.",
+                "Octopuses have three hearts, nine brains, and blue blood.",
+                "The Great Barrier Reef is the largest living structure on Earth and can be seen from space.",
+                "There are more possible iterations of a game of chess than there are atoms in the observable universe."
+            ];
+
+            const fact = facts[Math.floor(Math.random() * facts.length)];
+
+            surpriseContent.innerHTML = `
+                <h3>Amazing Fact</h3>
+                <div class="speech-bubble">
+                    <p style="font-size: 1.1rem;">${fact}</p>
+                </div>
+            `;
+        }
+
+        // Mini Game
+        function openGameModal() {
+            gameModal.classList.add('active');
+            gameScore = 0;
+            scoreDisplay.textContent = `Score: ${gameScore}`;
+            obstacles = [];
+
+            // Remove any existing obstacles
+            const existingObstacles = gameContainer.querySelectorAll('.obstacle');
+            existingObstacles.forEach(obs => obs.remove());
+        }
+
+        function closeGameModal() {
+            gameModal.classList.remove('active');
+
+            if (gameActive) {
+                gameActive = false;
+                cancelAnimationFrame(animationFrameId);
+            }
+        }
+
+        function startGame() {
+            if (gameActive) return;
+
+            gameActive = true;
+            gameScore = 0;
+            scoreDisplay.textContent = `Score: ${gameScore}`;
+            startGameBtn.disabled = true;
+
+            // Setup keyboard controls
+            window.addEventListener('keydown', moveCharacter);
+
+            // Game loop
+            gameLoop();
+        }
+
+        function moveCharacter(e) {
+            if (!gameActive) return;
+
+            if (e.key === 'ArrowLeft') {
+                characterPosition = Math.max(0, characterPosition - 10);
+            } else if (e.key === 'ArrowRight') {
+                characterPosition = Math.min(100, characterPosition + 10);
+            }
+
+            character.style.left = `${characterPosition}%`;
+        }
+
+        function gameLoop() {
+            if (!gameActive) return;
+
+            // Create new obstacle occasionally
+            if (Math.random() < 0.03) {
+                createObstacle();
+            }
+
+            // Move obstacles
+            moveObstacles();
+
+            // Check collisions
+            checkCollisions();
+
+            // Increase score
+            gameScore += 1;
+            scoreDisplay.textContent = `Score: ${Math.floor(gameScore / 10)}`;
+
+            // Continue game loop
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function createObstacle() {
+            const obstacle = document.createElement('div');
+            obstacle.classList.add('obstacle');
+
+            const leftPosition = Math.random() * 100;
+            obstacle.style.left = `${leftPosition}%`;
+
+            gameContainer.appendChild(obstacle);
+            obstacles.push({
+                element: obstacle,
+                position: {
+                    x: leftPosition,
+                    y: 0
+                }
+            });
+        }
+
+        function moveObstacles() {
+            for (let i = 0; i < obstacles.length; i++) {
+                const obstacle = obstacles[i];
+                obstacle.position.y += 2;
+                obstacle.element.style.top = `${obstacle.position.y}%`;
+
+                // Remove obstacles that go off screen
+                if (obstacle.position.y > 100) {
+                    obstacle.element.remove();
+                    obstacles.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        function checkCollisions() {
+            const characterRect = character.getBoundingClientRect();
+
+            for (let i = 0; i < obstacles.length; i++) {
+                const obstacleRect = obstacles[i].element.getBoundingClientRect();
+
+                if (
+                    characterRect.left < obstacleRect.right &&
+                    characterRect.right > obstacleRect.left &&
+                    characterRect.top < obstacleRect.bottom &&
+                    characterRect.bottom > obstacleRect.top
+                ) {
+                    // Collision detected
+                    endGame();
+                    return;
+                }
+            }
+        }
+
+        function endGame() {
+            gameActive = false;
+            window.removeEventListener('keydown', moveCharacter);
+
+            // Show final score
+            surpriseContent.innerHTML = `
+                <h3>Game Over!</h3>
+                <p style="font-size: 1.2rem; margin: 10px 0;">Your score: ${Math.floor(gameScore / 10)}</p>
+                <p>Thanks for playing!</p>
+            `;
+
+            closeGameModal();
+            startGameBtn.disabled = false;
+        }
+
+        // Create emoji rain
+        function createEmojiRain() {
+            const emojis = ['😊', '🎉', '✨', '🌟', '🎁', '🎈', '🎊', '💫', '💖', '👍', '🌈', '💯', '🔥'];
+
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const emoji = document.createElement('div');
+                    emoji.classList.add('emoji-rain');
+                    emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+                    // Random position and rotation
+                    const leftPos = Math.random() * 100;
+                    const rotation = Math.random() * 360;
+                    const delay = Math.random() * 2;
+                    const duration = 2 + Math.random() * 3;
+
+                    emoji.style.left = `${leftPos}vw`;
+                    emoji.style.transform = `rotate(${rotation}deg)`;
+                    emoji.style.animationDuration = `${duration}s`;
+                    emoji.style.animationDelay = `${delay}s`;
+
+                    document.body.appendChild(emoji);
+
+                    // Remove after animation
+                    setTimeout(() => {
+                        emoji.remove();
+                    }, (delay + duration) * 1000);
+                }, i * 100);
+            }
+        }
+
+        // Matrix code effect
+        function setupMatrixEffect() {
+            const characters = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789';
+            const fontSize = 16;
+            const columns = Math.floor(window.innerWidth / fontSize);
+
+            for (let i = 0; i < columns; i++) {
+                const column = document.createElement('div');
+                column.classList.add('matrix-column');
+                column.style.left = `${i * fontSize}px`;
+                column.style.animationDelay = `${Math.random() * 2}s`;
+                matrixEffect.appendChild(column);
+
+                matrixColumns.push({
+                    element: column,
+                    chars: Math.floor(Math.random() * 20) + 5,
+                    speed: Math.random() * 20 + 10
+                });
+            }
+        }
+
+        function activateMatrixEffect() {
+            matrixEffect.classList.add('active');
+            renderMatrixEffect();
+        }
+
+        function deactivateMatrixEffect() {
+            matrixEffect.classList.remove('active');
+        }
+
+        function renderMatrixEffect() {
+            if (!matrixEffect.classList.contains('active')) return;
+
+            const characters = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789';
+
+            matrixColumns.forEach(column => {
+                let columnContent = '';
+                for (let i = 0; i < column.chars; i++) {
+                    columnContent += characters.charAt(Math.floor(Math.random() * characters.length)) + '<br>';
+                }
+                column.element.innerHTML = columnContent;
+
+                // Move columns down at different speeds
+                const currentTop = parseInt(column.element.style.top) || -100;
+                column.element.style.top = `${currentTop + column.speed}px`;
+                // Reset columns that have moved off screen
+                if (currentTop > window.innerHeight) {
+                    column.element.style.top = '-100px';
+                    column.chars = Math.floor(Math.random() * 20) + 5;
+                }
+            });
+
+            requestAnimationFrame(renderMatrixEffect);
+        }
+
+        // Generate personality quiz
+        function generatePersonalityQuiz() {
+            const quiz = {
+                question: "What would you do first in a new city?",
+                options: [
+                    "Visit popular tourist attractions",
+                    "Find a local café and observe people",
+                    "Go on an unplanned adventure exploring streets",
+                    "Look up the best-rated restaurants"
+                ],
+                results: [
+                    "You're a Structured Explorer! You appreciate organization and planning to make the most of experiences.",
+                    "You're a Thoughtful Observer! You value authentic experiences and enjoy understanding the culture.",
+                    "You're an Adventurous Spirit! You thrive on spontaneity and unexpected discoveries.",
+                    "You're a Sensory Seeker! You connect with places through flavors and culinary experiences."
+                ]
+            };
+
+            let quizHTML = `
+                <h3>Quick Personality Quiz</h3>
+                <p>${quiz.question}</p>
+                <div class="options">`;
+
+            quiz.options.forEach((option, index) => {
+                quizHTML += `
+                    <div class="option" data-result="${index}" style="padding:10px; margin:8px 0; background-color:var(--background); border-radius:8px; cursor:pointer;">
+                        ${option}
+                    </div>`;
+            });
+
+            quizHTML += `</div>`;
+
+            surpriseContent.innerHTML = quizHTML;
+
+            // Add event listeners to options
+            const options = surpriseContent.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function () {
+                    const resultIndex = this.getAttribute('data-result');
+                    showQuizResult(resultIndex);
+                });
+            });
+        }
+
+        function showQuizResult(resultIndex) {
+            const quiz = {
+                results: [
+                    "You're a Structured Explorer! You appreciate organization and planning to make the most of experiences.",
+                    "You're a Thoughtful Observer! You value authentic experiences and enjoy understanding the culture.",
+                    "You're an Adventurous Spirit! You thrive on spontaneity and unexpected discoveries.",
+                    "You're a Sensory Seeker! You connect with places through flavors and culinary experiences."
+                ]
+            };
+
+            const result = `
+                <h3>Your Personality Result</h3>
+                <div class="result" style="padding:15px; background-color:var(--primary); color:var(--on-primary); border-radius:10px;">
+                    <p style="font-size:1.1rem;">${quiz.results[resultIndex]}</p>
+                </div>`;
+
+            surpriseContent.innerHTML = result;
+
+            // Add some confetti effect
+            triggerFireworks();
+        }
+
+        // Generate random message
+        function generateRandomMessage() {
+            const messages = [
+                "You've discovered a hidden feature! Congratulations!",
+                "Your curiosity is what makes technology fun!",
+                "Sometimes the best surprises are the simplest ones.",
+                "Thanks for exploring this interactive experience!",
+                "Surprise! Sometimes it's the small things that bring joy."
+            ];
+
+            const message = messages[Math.floor(Math.random() * messages.length)];
+
+            surpriseContent.innerHTML = `
+                <h3>Special Message</h3>
+                <p style="font-size:1.2rem; padding:10px; text-align:center;">${message}</p>
+            `;
+        }
+
+        // Generate motivational message
+        function generateMotivationalMessage() {
+            const quotes = [
+                "The only way to do great work is to love what you do. – Steve Jobs",
+                "Success is not final, failure is not fatal: It is the courage to continue that counts. – Winston Churchill",
+                "Believe you can and you're halfway there. – Theodore Roosevelt",
+                "It does not matter how slowly you go as long as you do not stop. – Confucius",
+                "Everything you've ever wanted is on the other side of fear. – George Addair",
+                "The future belongs to those who believe in the beauty of their dreams. – Eleanor Roosevelt",
+                "The best way to predict the future is to create it. – Abraham Lincoln"
+            ];
+
+            const quote = quotes[Math.floor(Math.random() * quotes.length)];
+
+            surpriseContent.innerHTML = `
+                <h3>Your Motivation for Today</h3>
+                <div style="padding:20px; background:linear-gradient(135deg, var(--primary), var(--secondary)); color:white; border-radius:10px;">
+                    <p style="font-size:1.1rem; font-style:italic;">"${quote.split('–')[0]}"</p>
+                    <p style="text-align:right; margin-top:10px;">– ${quote.split('–')[1]}</p>
+                </div>
+            `;
+        }
+
+        // Fireworks effect
+        function triggerFireworks() {
+            const colors = [
+                '#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff',
+                '#ff8800', '#8800ff', '#ff0088', '#00ff88'
+            ];
+
+            // Clear canvas
+            ctx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+
+            // Create multiple fireworks
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    // Random position
+                    const x = Math.random() * fireworksCanvas.width;
+                    const y = Math.random() * (fireworksCanvas.height / 2);
+
+                    // Random color
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+
+                    createFirework(x, y, color);
+                }, i * 300);
+            }
+        }
+
+        function createFirework(x, y, color) {
+            const particles = 50;
+
+            for (let i = 0; i < particles; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 3 + 2;
+                const size = Math.random() * 2 + 1;
+
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed;
+
+                const startTime = performance.now();
+                const duration = Math.random() * 1000 + 500;
+
+                animateFireworkParticle(x, y, vx, vy, size, color, startTime, duration);
+            }
+        }
+
+        function animateFireworkParticle(x, y, vx, vy, size, color, startTime, duration) {
+            const timestamp = performance.now();
+            const elapsed = timestamp - startTime;
+            const progress = elapsed / duration;
+
+            if (progress < 1) {
+                // Calculate position with gravity
+                const currentX = x + vx * elapsed / 16;
+                const currentY = y + vy * elapsed / 16 + 0.05 * Math.pow(elapsed / 32, 2);
+
+                // Draw particle
+                ctx.globalAlpha = 1 - progress;
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(currentX, currentY, size, 0, Math.PI * 2);
+                ctx.fill();
+
+                requestAnimationFrame(() => {
+                    animateFireworkParticle(x, y, vx, vy, size, color, startTime, duration);
+                });
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>
