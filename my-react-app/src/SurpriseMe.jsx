@@ -13,9 +13,12 @@ const SurpriseMe = () => {
           <div className="surprise-title">🎉 SURPRISE! 🎉</div>
           <div className="surprise-text">You found the confetti party!</div>
           <div className="confetti-container">
-            {[...Array(20)].map((_, i) => (
-              <span key={i} className="confetti">
-                {['🎉', '✨', '💫', '⭐', '🌟'][Math.floor(Math.random() * 5)]}
+            {[...Array(30)].map((_, i) => (
+              <span key={i} className="confetti" style={{ 
+                animationDelay: `${Math.random() * 2}s`,
+                animationDuration: `${1 + Math.random() * 2}s`
+              }}>
+                {['🎉', '✨', '💫', '⭐', '🌟', '🎊', '🪅', '🎈'][Math.floor(Math.random() * 8)]}
               </span>
             ))}
           </div>
@@ -29,6 +32,23 @@ const SurpriseMe = () => {
           <div className="surprise-title">😄 JOKE TIME! 😄</div>
           <div className="surprise-text">Why don't programmers like nature?</div>
           <div className="joke-punchline">It has too many bugs! 🐛</div>
+          <div className="laugh-emojis">
+            {[...Array(5)].map((_, i) => (
+              <span key={i} className="laugh-emoji" style={{ animationDelay: `${i * 0.2}s` }}>
+                😂
+              </span>
+            ))}
+          </div>
+        </div>
+      )
+    },
+    {
+      type: 'facts',
+      element: (
+        <div className="surprise-content">
+          <div className="surprise-title">🧠 RANDOM FACT! 🧠</div>
+          <div className="surprise-text">Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly good to eat!</div>
+          <div className="fact-emoji">🍯</div>
         </div>
       )
     }
@@ -52,9 +72,27 @@ const SurpriseMe = () => {
           onClick={handleSurprise}
           disabled={isLoading}
         >
-          {isLoading ? 'Getting surprise...' : 'Surprise Me!'}
+          {isLoading ? 
+            <span className="loading-text">
+              <span className="dot">.</span>
+              <span className="dot">.</span>
+              <span className="dot">.</span>
+            </span> : 
+            <span>Surprise Me! 🎁</span>
+          }
         </button>
-        {surprise && <div className="surprise-box">{surprise.element}</div>}
+        {surprise && (
+          <div className="surprise-box animate-in">
+            {surprise.element}
+            <button 
+              className="another-surprise-button" 
+              onClick={handleSurprise}
+              disabled={isLoading}
+            >
+              Another surprise!
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
