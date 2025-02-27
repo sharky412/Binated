@@ -1,4 +1,3 @@
-/* General Container Styling */
 .surprise-container {
   min-height: 100vh;
   display: flex;
@@ -8,7 +7,6 @@
   padding: 20px;
 }
 
-/* Card Styling */
 .surprise-card {
   background: white;
   padding: 20px;
@@ -19,7 +17,6 @@
   width: 100%;
 }
 
-/* Titles and Text */
 .app-title {
   font-size: 24px;
   color: #6b46c1;
@@ -32,7 +29,6 @@
   margin-bottom: 20px;
 }
 
-/* Button Styling */
 .surprise-button {
   background: linear-gradient(to right, #6b46c1, #3182ce);
   color: white;
@@ -44,16 +40,12 @@
   transition: transform 0.2s;
 }
 
-.surprise-button:active {
-  transform: scale(0.95);
-}
-
+.surprise-button:active { transform: scale(0.95); }
 .surprise-button.disabled {
   background: #ccc;
   cursor: not-allowed;
 }
 
-/* Surprise Box */
 .surprise-box {
   margin-top: 20px;
   padding: 15px;
@@ -62,27 +54,20 @@
   background: #f9f9f9;
 }
 
-/* Surprise Content */
-.surprise-content {
-  text-align: center;
-}
-
+.surprise-content { text-align: center; }
 .surprise-title {
   font-size: 24px;
   margin-bottom: 10px;
 }
-
 .surprise-text {
   font-size: 18px;
   margin-bottom: 5px;
 }
-
 .joke-punchline {
   font-size: 20px;
   font-weight: bold;
 }
 
-/* Confetti Animation */
 .confetti-container {
   margin-top: 10px;
   display: flex;
@@ -98,10 +83,6 @@
 }
 
 @keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
