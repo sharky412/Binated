@@ -1,101 +1,107 @@
-body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(to bottom, #ebf8ff, #d6bcfa);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+/* General Container Styling */
+.surprise-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom, #ebf8ff, #d6bcfa);
+  padding: 20px;
+}
+
+/* Card Styling */
+.surprise-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+/* Titles and Text */
+.app-title {
+  font-size: 24px;
+  color: #6b46c1;
+  margin-bottom: 10px;
+}
+
+.app-description {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* Button Styling */
+.surprise-button {
+  background: linear-gradient(to right, #6b46c1, #3182ce);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.surprise-button:active {
+  transform: scale(0.95);
+}
+
+.surprise-button.disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Surprise Box */
+.surprise-box {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #f9f9f9;
+}
+
+/* Surprise Content */
+.surprise-content {
+  text-align: center;
+}
+
+.surprise-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.surprise-text {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.joke-punchline {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Confetti Animation */
+.confetti-container {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+}
+
+.confetti {
+  display: inline-block;
+  font-size: 24px;
+  animation: bounce 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
   }
-  
-  .container {
-    text-align: center;
+  50% {
+    transform: translateY(-10px);
   }
-  
-  .card {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    margin: auto;
-  }
-  
-  .header {
-    color: #6b46c1;
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-  
-  .description {
-    font-size: 16px;
-    color: #555;
-  }
-  
-  .button {
-    background: linear-gradient(to right, #6b46c1, #3182ce);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 18px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 15px;
-    transition: transform 0.2s;
-  }
-  
-  .button:hover {
-    transform: scale(1.05);
-  }
-  
-  .button.disabled {
-    background: #ccc;
-    cursor: not-allowed;
-  }
-  
-  .result {
-    margin-top: 20px;
-    font-size: 18px;
-    color: #333;
-  }
-  
-  .content {
-    padding: 15px;
-  }
-  
-  .title {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .text {
-    font-size: 18px;
-    margin-bottom: 5px;
-  }
-  
-  .bold {
-    font-size: 20px;
-    font-weight: bold;
-    color: #6b46c1;
-  }
-  
-  .confetti-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 5px;
-    margin-top: 10px;
-  }
-  
-  .confetti {
-    display: inline-block;
-    font-size: 24px;
-    animation: bounce 2s infinite ease-in-out;
-  }
-  
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-  
+}
